@@ -4,43 +4,13 @@ from django.test.client import Client
 from django.contrib.sites.models import Site
 from django.conf import settings
 
-from cms.models import Page, Title
 from cms_redirects.models import CMSRedirect
 
 class TestRedirects(unittest.TestCase):
     def setUp(self):
         settings.APPEND_SLASH = False
-        
-        self.site = Site.objects.get_current()
-
-        page = Page()
-        page.site = self.site
-        page.save()
-        page.publish()
-        self.page = page
-
-        title = Title(title="Hello world!")
-        title.page = page
-        title.language = u'en'
-        title.save()                
-        
-    def test_301_page_redirect(self):
-        r_301_page = CMSRedirect(site=self.site, page=self.page, old_path='/301_page.php')
-        r_301_page.save()
-        
-        c = Client()
-        r = c.get('/301_page.php')
-        self.assertEqual(r.status_code, 301)
-        self.assertEqual(r._headers['location'][1], 'http://testserver/')
-        
-    def test_302_page_redirect(self):
-        r_302_page = CMSRedirect(site=self.site, page=self.page, old_path='/302_page.php', response_code='302')
-        r_302_page.save()
-        
-        c = Client()
-        r = c.get('/302_page.php')
-        self.assertEqual(r.status_code, 302)
-        self.assertEqual(r._headers['location'][1], 'http://testserver/')
+        self.site = Site(pk=1, domain='test.com', name='test')
+        self.site.save()
 
     def test_301_path_redirect(self):
         r_301_path = CMSRedirect(site=self.site, new_path='/', old_path='/301_path.php')

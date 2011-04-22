@@ -18,11 +18,6 @@ class RedirectFallbackMiddleware(object):
                 except CMSRedirect.DoesNotExist:
                     pass
             if r is not None:
-                if r.page:
-                    if r.response_code == '302':
-                        return http.HttpResponseRedirect(r.page.get_absolute_url())
-                    else:
-                        return http.HttpResponsePermanentRedirect(r.page.get_absolute_url())
                 if r.new_path == '':
                     return http.HttpResponseGone()
                 if r.response_code == '302':

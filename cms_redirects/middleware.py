@@ -5,7 +5,7 @@ from django.conf import settings
 class RedirectFallbackMiddleware(object):
     def process_exception(self, request, exception):
         if isinstance(exception, http.Http404):
-            path = request.get_full_path()
+            path = request.path
             try:
                 r = CMSRedirect.objects.get(site__id__exact=settings.SITE_ID, old_path=path)
             except CMSRedirect.DoesNotExist:
